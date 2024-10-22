@@ -24,7 +24,7 @@ This tool leverages the Bioconductor packages [BSgenome](https://bioconductor.or
 
 #### **`extract_sequence_with_flanks`** - *Get Sequences and thier Flanking Regions from Genomic Coordinates*
 
-This function is similar to `extract_sequence` except that it extracts both sequence defined by exonStart_0base to exonEnd and a desired number of flanking seqeunces (such as 50 $+/-$ the exon region). For easy visualizaiton, the flanking (intronic) regions are in lowercase.
+This function is similar to `extract_sequence` except that it extracts both sequence defined by exonStart_0base to exonEnd and a desired number of flanking seqeunces (such as 50 +/- the exon region). For easy visualizaiton, the flanking (intronic) regions are in lowercase.
 
 | gene  | strand | chr | exonStart_0base | exonEnd   | nucleotide_sequence                                 
 |-------|--------|-----|-----------------|-----------|--------------------------------------------------------------------|
