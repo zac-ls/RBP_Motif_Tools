@@ -42,4 +42,5 @@ This function is similar to `extract_sequence` except that it extracts both sequ
 | **G**    | 0.0620 | 0.0148 | 0.0148 | 0.0148 | 0.0148 | 0.2048 | 0.5665 |
 | **T**    | 0.7258 | 0.9556 | 0.9556 | 0.9556 | 0.9556 | 0.5736 | 0.2649 |
 
-
+This is a PPM of the *TIA1* gene per [RBPmap](http://rbpmap.technion.ac.il)
+ 
