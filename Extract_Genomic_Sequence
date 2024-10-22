@@ -1,0 +1,33 @@
+# Load necessary libraries
+library(BSgenome)
+library(BSgenome.Hsapiens.UCSC.hg38)
+library(dplyr)
+
+# Function to extract nucleotide sequences based on genomic coordinates
+extract_sequence <- function(chromosome, exon_start, exon_end) {
+  # Check if chromosome has 'chr' prefix, if not add it
+  if (!grepl("^chr", chromosome)) {
+    chromosome <- paste0("chr", chromosome)
+  }
+  
+  # Ensure valid start and end points
+  start <- min(exon_start, exon_end)
+  end <- max(exon_start, exon_end)
+  
+  # Extract the sequence using the coordinates and chromosome
+  seq <- getSeq(BSgenome.Hsapiens.UCSC.hg38, names = chromosome, start = start, end = end)
+  
+  return(as.character(seq))  # Return the nucleotide sequence as a character string
+}
+
+# Example Data Frame
+df <- data.frame(
+  gene = c("gene1", "gene2", "gene3"),
+  strand = c("+","+","-"),
+  chr = c("12", "3", "12"),
+  exonStart_0base = c(70155911, 193626092, 21657751),
+  exonEnd = c(70155988, 193626202, 21657835))
+
+# Apply the function to each row in the data frame using mutate
+df_with_sequences <- df %>%
+  mutate(nucleotide_sequence = mapply(extract_sequence, chr, exonStart_0base, exonEnd))
