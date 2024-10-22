@@ -3,8 +3,8 @@ library(BSgenome)
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(dplyr)
 
-# Function to extract nucleotide sequences with 50bp flanking regions
-extract_sequence_with_flanks <- function(chromosome, exon_start, exon_end, flank_length = 50) {
+# Function to extract nucleotide sequences with 50bp flanking regions and apply reverse complement if needed
+extract_sequence_with_flanks <- function(chromosome, exon_start, exon_end, strand, flank_length = 50) {
   # Check if chromosome has 'chr' prefix, if not add it
   if (!grepl("^chr", chromosome)) {
     chromosome <- paste0("chr", chromosome)
@@ -33,17 +33,44 @@ extract_sequence_with_flanks <- function(chromosome, exon_start, exon_end, flank
                          toupper(substring(full_seq, exon_start_rel, exon_end_rel)),  # Exon (uppercase)
                          tolower(substring(full_seq, exon_end_rel + 1)))  # Downstream region
   
-  return(full_seq_mod)  # Return the modified sequence with proper casing
+  # Custom function to get reverse complement while retaining case
+  reverse_complement_case <- function(sequence) {
+    # Define complement mapping for both upper and lower case
+    complement_map <- c(
+      'A' = 'T', 'T' = 'A', 'C' = 'G', 'G' = 'C',
+      'a' = 't', 't' = 'a', 'c' = 'g', 'g' = 'c'
+    )
+    
+    # Split the sequence into individual characters
+    chars <- unlist(strsplit(sequence, ""))
+    
+    # Reverse the sequence and get the complement
+    rev_complement <- sapply(rev(chars), function(x) complement_map[x])
+    
+    # Collapse the character vector back into a string
+    return(paste(rev_complement, collapse = ""))
+  }
+  
+  # Apply reverse complement if the strand is "-"
+  if (strand == "-") {
+    full_seq_mod <- reverse_complement_case(full_seq_mod)
+  }
+  
+  return(full_seq_mod)  # Return the modified sequence with proper casing and reverse complement if applicable
 }
 
 # Example Data Frame
 df <- data.frame(
   gene = c("gene1", "gene2", "gene3"),
-  strand = c("+","+","-"),
+  strand = c("+", "+", "-"),
   chr = c("17", "3", "12"),
   exonStart_0base = c(81110914, 193626092, 21657751),
-  exonEnd = c(81110955, 193626202, 21657835))
+  exonEnd = c(81110955, 193626202, 21657835)
+)
 
 # Apply the function to each row in the data frame using mutate
-df_with_sequences <- df_with_sequences %>%
-  mutate(nucleotide_sequence = mapply(extract_sequence_with_flanks, chr, exonStart_0base, exonEnd))
+df_with_sequences <- df %>%
+  mutate(nucleotide_sequence = mapply(extract_sequence_with_flanks, chr, exonStart_0base, exonEnd, strand))
+
+# View the updated data frame with the new 'nucleotide_sequence' column
+print(df_with_sequences)
