@@ -24,9 +24,9 @@ extract_sequence <- function(chromosome, exon_start, exon_end) {
 df <- data.frame(
   gene = c("gene1", "gene2", "gene3"),
   strand = c("+","+","-"),
-  chr = c("12", "3", "12"),
-  exonStart_0base = c(70155911, 193626092, 21657751),
-  exonEnd = c(70155988, 193626202, 21657835))
+  chr = c("17", "3", "12"),
+  exonStart_0base = c(81110914, 193626092, 21657751),
+  exonEnd = c(81110955, 193626202, 21657835))
 
 # Apply the function to each row in the data frame using mutate
 df_with_sequences <- df %>%
