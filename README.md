@@ -9,3 +9,7 @@ The tools presented here are functions in R designed to provide motif scores bas
 | gene1 | +      | 17  | 81110914        | 81110955  |
 | gene2 | +      | 3   | 193626092       | 193626202 |
 | gene3 | –      | 12  | 21657751        | 21657835  |
+
+The tools are listed below:
+
+- `extract_sequence`: This tool leverages the Bioconductor packages [BSgenome](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) and its associated genome (e.g. BSgenome.Hsapiens.UCSC.hg38) to extract nucleotide sequences based on genomic coordinates — exon start (exonStart_0base) to exon end (exonEnd). For entries where the strand is negative (-), representing a reverse orientation compared to the standard convention, the extracted sequence is reverse complemented.
