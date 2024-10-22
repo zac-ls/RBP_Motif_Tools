@@ -1,0 +1,52 @@
+# Load necessary libraries
+library(BSgenome)
+library(BSgenome.Hsapiens.UCSC.hg38)
+library(dplyr)
+
+# Function to extract nucleotide sequences with 50bp flanking regions
+extract_sequence_with_flanks <- function(chromosome, exon_start, exon_end, flank_length = 50) {
+  # Check if chromosome has 'chr' prefix, if not add it
+  if (!grepl("^chr", chromosome)) {
+    chromosome <- paste0("chr", chromosome)
+  }
+  
+  # Define flanking coordinates
+  extended_start <- exon_start - flank_length
+  extended_end <- exon_end + flank_length
+  
+  # Ensure valid genomic start and end points
+  genomic_start <- min(extended_start, extended_end)
+  genomic_end <- max(extended_start, extended_end)
+  
+  # Extract the full sequence (including flanks)
+  full_seq <- getSeq(BSgenome.Hsapiens.UCSC.hg38, names = chromosome, start = genomic_start, end = genomic_end)
+  
+  # Convert the full sequence to character for manipulation
+  full_seq <- as.character(full_seq)
+  
+  # Calculate the positions of the exon sequence relative to the full sequence
+  exon_start_rel <- flank_length + 1
+  exon_end_rel <- exon_start_rel + (exon_end - exon_start)
+  
+  # Convert upstream and downstream regions to lowercase, keep exon in uppercase
+  full_seq_mod <- paste0(tolower(substring(full_seq, 1, exon_start_rel - 1)),  # Upstream region
+                         toupper(substring(full_seq, exon_start_rel, exon_end_rel)),  # Exon (uppercase)
+                         tolower(substring(full_seq, exon_end_rel + 1)))  # Downstream region
+  
+  return(full_seq_mod)  # Return the modified sequence with proper casing
+}
+
+# Example Data Frame (same as df_with_sequences generated in extract_sequence function)
+df_with_sequences <- data.frame(
+  gene = c("gene1", "gene2", "gene3"),
+  strand = c("+","+","-"),
+  chr = c("12", "3", "12"),
+  exonStart_0base = c(70155911, 193626092, 21657751),
+  exonEnd = c(70155988, 193626202, 21657835),
+  nucleotide_sequence = c("CGCCGATGTGGAAGTGGCCAGATTCTGAGCCGCCTGACTAGA",
+                          "GGTCTGCTTGGTGAGCTCATTCTCTTACAACAACAAATTCAAGAGCATGAAGAGGAAGCGCGCAGAGCCGCTGGCCAATATAGCACGAGCTATGCCCAACAGAAGCGCAAG",
+                          "CAGGAGAGAGAAGGCTCTGGAGACCTCTGTAACAGTCGTGCGGAGAAGACAAAGTCAGCTGCGTGCGTCTCCTCCGGCGCCGGCT"))
+
+# Apply the function to each row in the data frame using mutate
+df_with_sequences <- df_with_sequences %>%
+  mutate(nucleotide_sequence = mapply(extract_sequence_with_flanks, chr, exonStart_0base, exonEnd))
