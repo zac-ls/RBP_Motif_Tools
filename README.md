@@ -32,4 +32,15 @@ This function is similar to `extract_sequence` except that it extracts both sequ
 | gene2 | +      | 3   | 193626092       | 193626202 | attattctcctccccaatttcctcttctcctcattgtgaactcgtggcagGGTCTGCTTGGTGAGCTCATTCTCTTACAACAACAAATTCAAGAGCATGAAGAGGAAGCGCGCAGAGCCGCTGGCCAATATAGCACGAGCTATGCCCAACAGAAGCGCAAGgtgatggatggtttaagggggctaccgatacattcacactaatcagccat                                                                                                                  |
 | gene3 | –      | 12  | 21657751        | 21657835  | taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg                                                                                                                                            |
 
+#### **`score_motif`** - *Get a Sequence Motif score for an RBP based on its PPM*
+
+
+| Position |   1  |   2   |   3   |   4  |
+|----------|-------|-------|-------|-------|
+| **A**   | 0.25  | 0.30  | 0.35  | 0.10  |
+| **C**    | 0.20  | 0.25  | 0.40  | 0.15  |
+| **G**    | 0.15  | 0.10  | 0.65  | 0.10  |
+| **T**    | 0.40  | 0.20  | 0.30  | 0.10  |
+| **A**    | 0.30  | 0.20  | 0.25  | 0.25  |
+
 
