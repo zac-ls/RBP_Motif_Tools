@@ -39,7 +39,7 @@ score_motif_with_positions_pwm <- function(sequence, pwm, threshold = 3) {
   return(positions)
 }
 
-# Function to find RBP binding sites, plot PWM motifs, and export each plot as a PNG to a folder
+# Function to find RBP binding sites, plot PWM motifs, and export each plot as a PDF to a folder
 find_rbp_binding_and_generate_table <- function(df, ppms, threshold = 3, output_folder = "RBP_Motif_Plots") {
   # Check if the folder exists, if not, create it
   if (!dir.exists(output_folder)) {
@@ -58,22 +58,22 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold = 3, output_
     sequence <- df$nucleotide_sequence[i]
     seq_length <- nchar(sequence)
     
-    # Define the file name for the PNG file
-    png_filename <- file.path(output_folder, paste0("Motif_Scores_", df$gene[i], ".png"))
+    # Define the file name for the PDF file
+    pdf_filename <- file.path(output_folder, paste0("Motif_Scores_", df$gene[i], ".pdf"))
     
-    # Open PNG device to save the plot
-    png(filename = png_filename, width = 800, height = 600)
+    # Open PDF device to save the plot
+    pdf(file = pdf_filename, width = 8, height = 6)
     
     # Adjust plot margins to allow room for motif sequences below the plot
-    par(mar = c(8, 4, 4, 2))  # Increased bottom margin to 8 to make space for both motif sequences and x-axis label
+    par(mar = c(7, 4, 4, 2))  # Increased bottom margin to 8 to make space for both motif sequences and x-axis label
     
-    # Initialize the plot 
+    # Initialize the plot
     plot(1:seq_length, rep(0, seq_length), type = "n", xaxt = "n", ylim = c(0, 7), 
          xlab = "", ylab = "Motif Score", 
          main = paste("Motif Scores for Gene:", df$gene[i]))
     
-    # Add x-axis label closer to the plot
-    mtext("Nucleotide Position", side = 1, line = 0.5, cex = 1)  # Closer to the plot
+    # Add x-axis label
+    mtext("Nucleotide Position", side = 1, line = 0.5, cex = 1)
     
     # Add a legend to the plot
     legend("topright", legend = names(ppms), col = colors, lty = 1, lwd = 4)
@@ -91,12 +91,20 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold = 3, output_
         segments(x0 = pos - 0.5, y0 = 0, x1 = pos + 0.5, y1 = 0, col = "black", lwd = 1)
       }
     }
-    
-    # Add "Exon" text inside the exon region, centered in the middle
+    # Add "Exon" label with genomic start and end positions near the exon box
     if (!is.na(exon_start) && !is.na(exon_end)) {
       exon_middle <- (exon_start + exon_end) / 2  # Find the middle of the exon
-      text(x = exon_middle, y = -0.1, labels = "Exon", col = "white", cex = 0.8)
+      text(x = exon_middle, y = -0.15, labels = paste("Exon", df$exonStart_0base[i], "-", df$exonEnd[i]), 
+           col = "white", cex = 0.8)
     }
+    
+    # Calculate genomic positions at both ends of the sequence
+    seq_start_pos <- df$exonStart_0base[i]  # Start position of the sequence
+    seq_end_pos <- seq_start_pos + seq_length - 1  # End position of the sequence
+    
+    # Add genomic start and end positions at both ends of the entire sequence
+    mtext(paste("Start:", seq_start_pos), side = 1, at = 1, line = 0.2, cex = 0.7)  # Start of the sequence
+    mtext(paste("End:", seq_end_pos), side = 1, at = seq_length, line = 0.2, cex = 0.7)  # End of the sequence
     
     # Loop over each RBP and plot their scores for the current sequence
     j <- 1  # Color index
@@ -132,7 +140,7 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold = 3, output_
       j <- j + 1  # Increment color index
     }
     
-    # Close the PNG device
+    # Close the PDF device
     dev.off()
   }
   
@@ -166,14 +174,14 @@ ppms_list <- list("ILF2" = ppm_ILF2, "RALY" = ppm_RALY, "RBM47" = ppm_RBM47)
 
 # Example Data Frame
 df <- data.frame(
-  gene = c("BAIAP2", "OPA1", "LDHB"),
-  chr = c("17", "3", "12"),
+  gene = c("SLK", "OPA1", "LDHB"),
+  chr = c("10", "3", "12"),
   strand = c("+","+","-"),
-  exonStart_0base = c(81110914, 193626092, 21657751),
-  exonEnd = c(81110955, 193626202, 21657835),
+  exonStart_0base = c(104010816, 193626092, 21657751),
+  exonEnd = c(104010908, 193626202, 21657835),
   FDR = c(0,0.00000124,0.00005245),
   IncLevelDifference = c(-0.405,0.204,-0.315),
-  nucleotide_sequence = c("agtcctcagaccccatgctgcctccaactgagccttgtgtttccttgcagCGCCGATGTGGAAGTGGCCAGATTCTGAGCCGCCTGACTAGAgttagtaagttgcctggcgttctcgtgcagtcactggcctctccagtggt",
+  nucleotide_sequence = c("ctgtggagaaagtatcatttccccacctcctgcatgcttatacactgtagGTTATAAATGAAGTGGAGAAAGCACCCAAAGAGCTGAGAAAAGAGCTCATGAAACGCAGGAAAGAGGAGCTTGCACAAAGCCAGCATGCTCAGgtaacagcagcagcttaatgctactaaaaccagaaagcaccattttctca",
                           "attattctcctccccaatttcctcttctcctcattgtgaactcgtggcagGGTCTGCTTGGTGAGCTCATTCTCTTACAACAACAAATTCAAGAGCATGAAGAGGAAGCGCGCAGAGCCGCTGGCCAATATAGCACGAGCTATGCCCAACAGAAGCGCAAGgtgatggatggtttaagggggctaccgatacattcacactaatcagccat", 
                           "taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg")
 )
