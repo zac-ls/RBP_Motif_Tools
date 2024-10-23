@@ -49,7 +49,7 @@ Here, we can generate RBP sequence motif scores based on either the position pro
 | **G**    | 0.0620 | 0.0148 | 0.0148 | 0.0148 | 0.0148 | 0.2048 | 0.5665 |
 | **T**    | 0.7258 | 0.9556 | 0.9556 | 0.9556 | 0.9556 | 0.5736 | 0.2649 |
 
-PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table).
+PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table) and a pseudocount of 1 is applied.
 
 To correct for background nucleotide frequencies, PWMs can be used. A PWM provides "expected" motif sequence scores by incorporating the background probabilities at uniformity ($1/4$ for each letter). To calculate PWM from PPM, the `generate_pwm_from_ppm` function uses the following logodds score formula:
 
