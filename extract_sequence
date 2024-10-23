@@ -47,12 +47,15 @@ extract_sequence <- function(chromosome, exon_start, exon_end, strand) {
 }
 
 # Example Data Frame
+# Example Data Frame
 df <- data.frame(
-  gene = c("gene1", "gene2", "gene3"),
-  strand = c("+", "+", "-"),
-  chr = c("17", "3", "12"),
-  exonStart_0base = c(81110914, 193626092, 21657751),
-  exonEnd = c(81110955, 193626202, 21657835)
+  gene = c("SLK", "OPA1", "LDHB"),
+  chr = c("10", "3", "12"),
+  strand = c("+","+","-"),
+  exonStart_0base = c(104010816, 193626092, 21657751),
+  exonEnd = c(104010908, 193626202, 21657835),
+  FDR = c(0,0.00000124,0.00005245),
+  IncLevelDifference = c(-0.405,0.204,-0.315)
 )
 
 # Apply the combined function to each row in the data frame using mutate
