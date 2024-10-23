@@ -1,6 +1,6 @@
 # RNA Binding Protien Motif Tools (for rMATS)
 
-RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are involved in many aspects of RNA processing, including alternative splicing. RBPs bind to RNA sequence motifs (about 3–5 bases) via their RNA recognition motif (RRM). Many RRMs and their RNA motifs have been experimentally characterized, and RBP-specific consensus RNA motif sequences have been probabilistically determined (see [ESEfinder](https://esefinder.ahc.umn.edu/tools/ESE2/) and [RBPmap](http://rbpmap.technion.ac.il)).
+RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are involved in many aspects of RNA processing, including alternative splicing. RBPs bind to RNA sequence motifs (about 3–5 bases) via their RNA recognition motif (RRM). Many RRMs and their binding sites have been experimentally characterized, and RBP-specific consensus motif sequences have been probabilistically determined (see [ESEfinder](https://esefinder.ahc.umn.edu/tools/ESE2/) and [RBPmap](http://rbpmap.technion.ac.il)).
 
 The tools presented here are functions in R designed to provide motif scores based on nucleotide sequences and known RBP position probability matrices (PPM). **These tools are intended for downstream analysis of outputs from [rMATS](https://rmats.sourceforge.io)** (a computational tool for detecting differential alternative splicing events in RNA-Seq data), using a data frame input structured as shown with the necessary columns below:
 
@@ -51,9 +51,11 @@ Here, we can generate RBP sequence motif scores based on either the position pro
 
 PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table).
 
-To correct for background nucleotide frequencies, PWMs can be used. A PWM refines the "expected" motif sequences by incorporating the background probabilities at uniformity ($1/4$ for each letter). To calculate PWM from PPM, the `generate_pwm_from_ppm` function uses this log formula:
+To correct for background nucleotide frequencies, PWMs can be used. A PWM provides "expected" motif sequence scores by incorporating the background probabilities at uniformity ($1/4$ for each letter). To calculate PWM from PPM, the `generate_pwm_from_ppm` function uses the following logodds score formula:
 
 ### $S(N) = \log_2 \left( \frac{P(C_N)}{B_N} \right)$
+
+Where $S$ is the score at each position $N$, $P$ is the probability of the counts $C_N$ (this is the same as the PPM), and the $B(N)$ is the background nucleotide frequency. For more information on the mathematics of sequence motif matrices, see [this vignette](https://bioconductor.org/packages/devel/bioc/vignettes/universalmotif/inst/doc/IntroductionToSequenceMotifs.pdf).
 
 ![Motif_Scores_LDHB](https://github.com/user-attachments/assets/81b3d337-75e9-44a2-bd26-e5f530b003b0)
 
