@@ -46,7 +46,6 @@ Here, we can generate sequence motif scores based on either the position probabi
 PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of frequencies (or counts) of each nucleotide at each position, known as a position count matrix (PCM). Note that in the PPM, all positions sum to 1.
 
 
-
-S(N) = log2(P(C_N) / B_N)
+$S(N) = \log_2 \left( \frac{P(C_N)}{B_N} \right)$
 
  
