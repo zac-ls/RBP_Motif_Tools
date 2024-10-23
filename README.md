@@ -47,5 +47,6 @@ PPMs represent the probabilities for each nucleotide at each position. These pro
 
 
 
+S(N) = log2(P(C_N) / B_N)
 
  
