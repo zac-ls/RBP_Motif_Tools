@@ -40,7 +40,7 @@ This code contains multiple functions:
 - **`score_motif_with_positions_pwm`** - *Scores motifs using PWM or PPM input and return the positions of high scores and their ranges*
 - **`find_rbp_binding_and_generate_table`** -*Finds RBP binding sites, plot PWM motifs, and export plots as a PNG to a folder*
 
-Here, we can generate RBP sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can found in certain online databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the *TIA1* gene. 
+Here, we can generate RBP sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can be found and downloaded from certain online databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the *TIA1* gene. 
 
 | Position |   1    |   2    |   3    |   4    |   5    |   6    |   7    |
 |----------|--------|--------|--------|--------|--------|--------|--------|
