@@ -1,0 +1,185 @@
+# Function to generate PWM from PPM with an optional flag for using a PWM directly
+generate_pwm_from_ppm <- function(ppm, background_freq = 0.25) {
+  pwm <- log2(ppm / background_freq)  # Calculate log2 of the ratio for PWM
+  return(pwm)
+}
+
+# Function to score a motif using a PWM or PPM and return the positions of high scores and their ranges
+score_motif_with_positions_pwm <- function(sequence, pwm, threshold = 3) {
+  sequence <- toupper(sequence)
+  motif_length <- ncol(pwm)
+  sequence_length <- nchar(sequence)
+  
+  # Vector to store scores and positions (start-end) where the motif score exceeds the threshold
+  scores <- numeric(sequence_length - motif_length + 1)
+  positions <- data.frame(start = integer(0), end = integer(0), score = numeric(0), motif_sequence = character(0))
+  
+  # Slide over the sequence
+  for (i in 1:(sequence_length - motif_length + 1)) {
+    window <- substring(sequence, i, i + motif_length - 1)
+    score <- 0
+    
+    # Calculate score for this window
+    for (j in 1:motif_length) {
+      base <- substr(window, j, j)
+      if (base == "A") score <- score + pwm["A", j]
+      if (base == "C") score <- score + pwm["C", j]
+      if (base == "G") score <- score + pwm["G", j]
+      if (base == "T") score <- score + pwm["T", j]
+    }
+    
+    scores[i] <- score
+    if (score > threshold) {
+      # Add the start, end positions, score, and matched motif sequence
+      positions <- rbind(positions, data.frame(start = i, end = i + motif_length - 1, 
+                                               score = score, motif_sequence = window))
+    }
+  }
+  
+  return(positions)
+}
+
+# Function to find RBP binding sites, plot PWM motifs, and export each plot as a PNG to a folder
+find_rbp_binding_and_generate_table <- function(df, ppms, threshold = 3, output_folder = "RBP_Motif_Plots") {
+  # Check if the folder exists, if not, create it
+  if (!dir.exists(output_folder)) {
+    dir.create(output_folder)
+  }
+  
+  # Initialize an empty list to store results for all sequences
+  motif_table <- data.frame(gene = character(0), RBP = character(0), motif_sequence = character(0), 
+                            score = numeric(0), start = integer(0), end = integer(0))
+  
+  # Color palette for plotting multiple RBPs
+  colors <- rainbow(length(ppms))
+  
+  # Iterate over each sequence in the dataframe
+  for (i in 1:nrow(df)) {
+    sequence <- df$nucleotide_sequence[i]
+    seq_length <- nchar(sequence)
+    
+    # Define the file name for the PNG file
+    png_filename <- file.path(output_folder, paste0("Motif_Scores_", df$gene[i], ".png"))
+    
+    # Open PNG device to save the plot
+    png(filename = png_filename, width = 800, height = 600)
+    
+    # Adjust plot margins to allow room for motif sequences below the plot
+    par(mar = c(8, 4, 4, 2))  # Increased bottom margin to 8 to make space for both motif sequences and x-axis label
+    
+    # Initialize the plot 
+    plot(1:seq_length, rep(0, seq_length), type = "n", xaxt = "n", ylim = c(0, 7), 
+         xlab = "", ylab = "Motif Score", 
+         main = paste("Motif Scores for Gene:", df$gene[i]))
+    
+    # Add x-axis label closer to the plot
+    mtext("Nucleotide Position", side = 1, line = 0.5, cex = 1)  # Closer to the plot
+    
+    # Add a legend to the plot
+    legend("topright", legend = names(ppms), col = colors, lty = 1, lwd = 4)
+    
+    # Plotting exons (uppercase) as boxes and introns (lowercase) as lines
+    exon_intron <- unlist(strsplit(df$nucleotide_sequence[i], ""))
+    exon_start <- NA
+    exon_end <- NA
+    for (pos in 1:seq_length) {
+      if (grepl("[A-Z]", exon_intron[pos])) {
+        rect(xleft = pos - 0.5, xright = pos + 0.5, ybottom = -2, ytop = 0, col = "black", border = NA)
+        if (is.na(exon_start)) exon_start <- pos  # Record the start of the exon
+        exon_end <- pos  # Keep updating exon_end to track the end of the exon
+      } else {
+        segments(x0 = pos - 0.5, y0 = 0, x1 = pos + 0.5, y1 = 0, col = "black", lwd = 1)
+      }
+    }
+    
+    # Add "Exon" text inside the exon region, centered in the middle
+    if (!is.na(exon_start) && !is.na(exon_end)) {
+      exon_middle <- (exon_start + exon_end) / 2  # Find the middle of the exon
+      text(x = exon_middle, y = -0.1, labels = "Exon", col = "white", cex = 0.8)
+    }
+    
+    # Loop over each RBP and plot their scores for the current sequence
+    j <- 1  # Color index
+    for (rbp_name in names(ppms)) {
+      ppm <- ppms[[rbp_name]]
+      
+      # Convert PPM to PWM
+      pwm <- generate_pwm_from_ppm(ppm)
+      
+      # Get the scores and positions for this RBP and sequence
+      score_data <- score_motif_with_positions_pwm(toupper(sequence), pwm, threshold)
+      
+      # Add to the motif table
+      if (nrow(score_data) > 0) {
+        score_data$gene <- df$gene[i]
+        score_data$RBP <- rbp_name
+        motif_table <- rbind(motif_table, score_data)
+      }
+      
+      # Plot motif scores as bars that span the motif length and show only matched motifs
+      if (nrow(score_data) > 0) {
+        for (k in 1:nrow(score_data)) {
+          rect(xleft = score_data$start[k], xright = score_data$end[k], 
+               ybottom = 0, ytop = score_data$score[k], 
+               col = adjustcolor(colors[j], alpha.f = 0.5), border = NA)
+          
+          # Display the motif sequence below the matched bar, outside the plot area
+          mtext(score_data$motif_sequence[k], side = 1, at = (score_data$start[k] + score_data$end[k]) / 2, 
+                line = 2, cex = 0.7, col = "black", las = 2)  # Placed on margin below the plot
+        }
+      }
+      
+      j <- j + 1  # Increment color index
+    }
+    
+    # Close the PNG device
+    dev.off()
+  }
+  
+  return(motif_table)  # Return the final motif table with all motifs and positions
+}
+
+# Example PPMs for multiple RBPs (you can add as many as needed)
+ppm_ILF2 <- matrix(c(0.144257703, 0.118347339, 0.118347339, 0.335134054, 0.046518607, 0.106042417, 0.131952781, 0.131952781,
+                     0.144157663, 0.118247299, 0.118247299, 0.094237695, 0.046418567, 0.105942377, 0.131852741, 0.131852741,
+                     0.567627051, 0.645258103, 0.645258103, 0.193277311, 0.860744298, 0.682272909, 0.604641857, 0.604641857,
+                     0.143957583, 0.118147259, 0.118147259, 0.37735094, 0.046318527, 0.105742297, 0.131552621, 0.131552621),
+                   nrow = 4, byrow = TRUE)
+rownames(ppm_ILF2) <- c("A", "C", "G", "T")  # Add row names
+
+ppm_RALY <- matrix(c(0.120423343, 0.006046784, 0.006046784, 0.006046784, 0.006046784, 0.006046784, 0.078456234,
+                     0.030364019, 0.006046784, 0.006046784, 0.006046784, 0.006046784, 0.093329554, 0.174053247,
+                     0.030364019, 0.006046784, 0.006046784, 0.006046784, 0.006046784, 0.095158042, 0.551652053,
+                     0.818848617, 0.981859646, 0.981859646, 0.981859646, 0.981859646, 0.805465617, 0.195838468),
+                   nrow = 4, byrow = TRUE)
+rownames(ppm_RALY) <- c("A", "C", "G", "T")  # Add row names
+
+ppm_RBM47 <- matrix(c(0.284942471,	1,	1,	0,	0.132466233,	0.636618309,
+                      0.162981491,	0,	0,	0,	0.389394697,	0.087143572,
+                      0.162881441,	0,	0,	0,	0.030915458,	0.087043522,
+                      0.389194597,	0,	0,	1,	0.447223612,	0.189194597),
+                    nrow = 4, byrow = TRUE)
+rownames(ppm_RBM47) <- c("A", "C", "G", "T")  # Add row names
+
+# Store the PPMs in a named list
+ppms_list <- list("ILF2" = ppm_ILF2, "RALY" = ppm_RALY, "RBM47" = ppm_RBM47)
+
+# Example Data Frame
+df <- data.frame(
+  gene = c("BAIAP2", "OPA1", "LDHB"),
+  chr = c("17", "3", "12"),
+  strand = c("+","+","-"),
+  exonStart_0base = c(81110914, 193626092, 21657751),
+  exonEnd = c(81110955, 193626202, 21657835),
+  FDR = c(0,0.00000124,0.00005245),
+  IncLevelDifference = c(-0.405,0.204,-0.315),
+  nucleotide_sequence = c("agtcctcagaccccatgctgcctccaactgagccttgtgtttccttgcagCGCCGATGTGGAAGTGGCCAGATTCTGAGCCGCCTGACTAGAgttagtaagttgcctggcgttctcgtgcagtcactggcctctccagtggt",
+                          "attattctcctccccaatttcctcttctcctcattgtgaactcgtggcagGGTCTGCTTGGTGAGCTCATTCTCTTACAACAACAAATTCAAGAGCATGAAGAGGAAGCGCGCAGAGCCGCTGGCCAATATAGCACGAGCTATGCCCAACAGAAGCGCAAGgtgatggatggtttaagggggctaccgatacattcacactaatcagccat", 
+                          "taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg")
+)
+
+# Find RBP binding motifs, generate plots, and export to folder
+motif_results <- find_rbp_binding_and_generate_table(df, ppms_list, threshold = 3)
+
+# View the generated table of RBP motif sequences and positions
+print(motif_results)
