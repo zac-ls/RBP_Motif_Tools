@@ -55,4 +55,6 @@ To correct for background nucleotide frequencies, PWMs can be used. A PWM refine
 
 ### $S(N) = \log_2 \left( \frac{P(C_N)}{B_N} \right)$
 
+![Motif_Scores_LDHB](https://github.com/user-attachments/assets/81b3d337-75e9-44a2-bd26-e5f530b003b0)
+
  
