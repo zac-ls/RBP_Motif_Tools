@@ -36,14 +36,11 @@ This function is similar to `extract_sequence` except that it extracts both sequ
 
 This code contains multiple functions:
 
-`generate_pwm_from_ppm` - *Get a Sequence Motif Score for an RBP Based on its PPM*
-`score_motif_with_positions_pwm` - *Get a Sequence Motif Score for an RBP Based on its PPM*
-`find_rbp_binding_and_generate_table`
+- **`generate_pwm_from_ppm`** - *Calculates an RBP PWM from input PPM*
+- **`score_motif_with_positions_pwm`** - *Scores motifs using PWM or PPM input and return the positions of high scores and their ranges*
+- **`find_rbp_binding_and_generate_table`** -*Finds RBP binding sites, plot PWM motifs, and export plots as a PNG to a folder*
 
-
-
-
-Here, we can generate sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can extracted from databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the *TIA1* gene. 
+Here, we can generate RBP sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can found in certain online databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the *TIA1* gene. 
 
 | Position |   1    |   2    |   3    |   4    |   5    |   6    |   7    |
 |----------|--------|--------|--------|--------|--------|--------|--------|
@@ -52,9 +49,10 @@ Here, we can generate sequence motif scores based on either the position probabi
 | **G**    | 0.0620 | 0.0148 | 0.0148 | 0.0148 | 0.0148 | 0.2048 | 0.5665 |
 | **T**    | 0.7258 | 0.9556 | 0.9556 | 0.9556 | 0.9556 | 0.5736 | 0.2649 |
 
-PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of frequencies (or counts) of each nucleotide at each position, known as a position count matrix (PCM). Note that in the PPM, all positions sum to 1.
+PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table).
 
+To correct for background nucleotide frequencies, PWMs can be used. A PWM refines the "expected" motif sequences by incorporating the background probabilities at uniformity ($1/4$ for each letter). To calculate PWM from PPM, the `generate_pwm_from_ppm` function uses this log formula:
 
-$S(N) = \log_2 \left( \frac{P(C_N)}{B_N} \right)$
+### $S(N) = \log_2 \left( \frac{P(C_N)}{B_N} \right)$
 
  
