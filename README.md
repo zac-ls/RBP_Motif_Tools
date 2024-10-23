@@ -34,8 +34,14 @@ This function is similar to `extract_sequence` except that it extracts both sequ
 
 #### **Motif Scoring & Plots** 
 
-This code
-- *Get a Sequence Motif Score for an RBP Based on its PPM*
+This code contains multiple functions:
+
+`generate_pwm_from_ppm` - *Get a Sequence Motif Score for an RBP Based on its PPM*
+`score_motif_with_positions_pwm` - *Get a Sequence Motif Score for an RBP Based on its PPM*
+`find_rbp_binding_and_generate_table`
+
+
+
 
 Here, we can generate sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can extracted from databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the *TIA1* gene. 
 
