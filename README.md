@@ -85,5 +85,5 @@ The function also generates a table of the RBP motif analyses, including the gen
 
 ## What's Next?
 
-For these tools, I plan to streamline them further and adapt them to accept other rMATS input formats (i.e. IR, A3SS, A5SS, and MXE tables). For a future RBP tool, I aim to develop functions that plot motif enrichment of alternatively spliced events against their ΔPSI values. This will enable investigations into how different RBPs contribute to the differential motif enrichment of alternatively spliced events across two conditions.
+For these tools, I plan to streamline them further and adapt them to accept other rMATS input formats (i.e. IR, A3SS, A5SS, and MXE tables). In a future RBP tool, I aim to develop functions that plot motif enrichment of alternatively spliced events against their ΔPSI values. This will enable investigations into how different RBPs contribute to the differential motif enrichment of alternatively spliced events across two conditions.
   
