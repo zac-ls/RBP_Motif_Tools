@@ -4,7 +4,7 @@ RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are invo
 
 The tools presented here are functions in R designed to provide motif scores based on nucleotide sequences and known RBP position probability matrices (PPM). **These tools are intended for downstream analysis of outputs from [rMATS](https://rmats.sourceforge.io)** (a computational tool for detecting differential alternative splicing events in RNA-Seq data), using a data frame input structured as shown with the necessary columns below:
 
-| gene  | chr | strand | exonStart_0base | exonEnd   |
+| geneSymbol  | chr | strand | exonStart_0base | exonEnd   |
 |-------|--------|-----|-----------------|-----------|
 | SLK | 10     | +  | 81110914        | 81110955  |
 | OPA1 | 3      | +  | 193626092       | 193626202 |
@@ -16,7 +16,7 @@ The tools are listed below:
 
 This tool leverages the Bioconductor packages [BSgenome](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) and its associated genome (e.g. BSgenome.Hsapiens.UCSC.hg38) to extract nucleotide sequences based on genomic coordinates — exon start (exonStart_0base) to exon end (exonEnd). For entries where the strand is negative (-), representing a reverse orientation compared to the standard convention, the extracted sequence is reverse complemented. A new data frame will look like this:
   
-| gene  | chr | strand | exonStart_0base | exonEnd   | nucleotide_sequence                                 |
+| geneSymbol  | chr | strand | exonStart_0base | exonEnd   | nucleotide_sequence                                 |
 |-------|--------|-----|-----------------|-----------|-----------------------------------------------------|
 | SLK | 10      | +  | 81110914        | 81110955  | CCGCCGATGTGGAAGTGGCCAGATTCTGAGCCGCCTGACTAGA         |
 | OPA1 | 3      | +  | 193626092       | 193626202 | GGTCTGCTTGGTGAGCTCATTCTCTTACAACAACAAATTCAAGAGCATGAAGAGGAAGCGCGCAGAGCCGCTGGCCAATATAGCACGAGCTATGCCCAACAGAAGCGCAAG           |
@@ -26,19 +26,20 @@ This tool leverages the Bioconductor packages [BSgenome](https://bioconductor.or
 
 This function is similar to `extract_sequence` except that it extracts both sequence defined by exonStart_0base to exonEnd and a desired number of flanking seqeunces (such as 50 +/- the exon region). For easy visualizaiton, the flanking (intronic) regions are in lowercase.
 
-| gene  | chr | strand | exonStart_0base | exonEnd   | nucleotide_sequence                                 
+| geneSymbol  | chr | strand | exonStart_0base | exonEnd   | nucleotide_sequence                                 
 |-------|--------|-----|-----------------|-----------|--------------------------------------------------------------------|
 | SLK | 10      | +  | 81110914        | 81110955  | agtcctcagaccccatgctgcctccaactgagccttgtgtttccttgcagCGCCGATGTGGAAGTGGCCAGATTCTGAGCCGCCTGACTAGAgttagtaagttgcctggcgttctcgtgcagtcactggcctctccagtggt   |
 | OPA1 | 3      | +  | 193626092       | 193626202 | attattctcctccccaatttcctcttctcctcattgtgaactcgtggcagGGTCTGCTTGGTGAGCTCATTCTCTTACAACAACAAATTCAAGAGCATGAAGAGGAAGCGCGCAGAGCCGCTGGCCAATATAGCACGAGCTATGCCCAACAGAAGCGCAAGgtgatggatggtttaagggggctaccgatacattcacactaatcagccat                                                                                                                  |
 | LDHB | 12      | -  | 21657751        | 21657835  | taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg                                                                                                                                            |
 
 ### **Motif Scoring & Plots** 
+#### **`find_rbp_binding_and_generate_table`** - *finds RBP binding sites, plots PWM motifs, and exports plots as a PDF to subfolder*
 
-This code contains multiple functions:
+This is a wrapper function that contains the following:
 
 - **`generate_pwm_from_ppm`** - *calculates an RBP PWM from input PPM*
+- **`calculate_max_score`** - finds the maximum possible score for a PWM*
 - **`score_motif_with_positions_pwm`** - *scores motifs using PWM or PPM input and returns the positions of high scores and their ranges*
-- **`find_rbp_binding_and_generate_table`** -*(wrapper function) finds RBP binding sites, plots PWM motifs, and exports plots as a PDF to subfolder*
 
 Here, we can generate RBP sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can be found and downloaded from certain online databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the *TIA1* gene. 
 
@@ -61,14 +62,13 @@ For a more detailed explanation of the mathematical principles behind sequence m
 
 The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) the motif's length across the sequence one position at a time and generates a score based on the matching nucleotides of the PWM at each window. Of course, we shouldn't accept all the motifs that are identified, so a threshold is applied. The thresholding method used here discards scores less than or equal to a percentage of the maximal possible score for a PWM (the max score is obtained by the `calculate_max_score` function.
 
-The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory. T
+The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
 
 <img width="458" alt="image" src="https://github.com/user-attachments/assets/31bfa738-4f54-444e-8a63-aa7abaf25085">
 
+The function also generates a table of the RBP motif analyses, including the gene symbol, RBP, motif sequence, the motif's score, its relative start and end positions within the sequence, and it's genomic start and end coordinates. 
 
-The function also generates a table of each RBP motif sequnce, its score and the event it derives from.
-
- | ID | gene | RBP  | motif_sequence | score  | start | end | genomic_start | genomic_end |
+ | ID | geneSymbol | RBP  | motif_sequence | score  | start | end | genomic_start | genomic_end |
 |----|------|------|----------------|--------|-------|-----|---------------|-------------|
 | 1  | SLK  | REM47| AAATGA         | 4.52175| 56    | 61  | 104010871     | 104010876   |
 | 2  | OPA1 | ILF2 | GCACGGT        | 5.47395| 46    | 53  | 193626137     | 193626144   |
@@ -81,3 +81,9 @@ The function also generates a table of each RBP motif sequnce, its score and the
 | 3  | LDHB | ILF2 | CGGACGAG       | 5.948750| 60   | 67  | 21657810      | 21657817    |
 | 3  | LDHB | REM47| GAATCC         | 4.500737| 158  | 163 | 21657908      | 21657913    |
 
+
+
+## What's Next?
+
+For these tools, I plan to streamline them further and adapt them to accept other rMATS input formats (i.e. IR, A3SS, A5SS, and MXE tables). For a future RBP tool, I aim to develop functions that plot motif enrichment of alternatively spliced events against their ΔPSI values. This will enable investigations into how different RBPs contribute to the differential motif enrichment of alternatively spliced events across two conditions.
+  
