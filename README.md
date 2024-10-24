@@ -61,8 +61,23 @@ For a more detailed explanation of the mathematical principles behind sequence m
 
 The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) the motif's length across the sequence one position at a time and generates a score based on the matching nucleotides of the PWM at each window. Of course, we shouldn't accept all the motifs that are identified, so a threshold is applied. The thresholding method used here discards scores less than or equal to a percentage of the maximal possible score for a PWM (the max score is obtained by the `calculate_max_score` function.
 
-The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory. The function also generates a table of each RBP motif sequnce, its score and the event it derives from.   
+The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory. T
 
 <img width="458" alt="image" src="https://github.com/user-attachments/assets/31bfa738-4f54-444e-8a63-aa7abaf25085">
 
- 
+
+The function also generates a table of each RBP motif sequnce, its score and the event it derives from.
+
+ | ID | gene | RBP  | motif_sequence | score  | start | end | genomic_start | genomic_end |
+|----|------|------|----------------|--------|-------|-----|---------------|-------------|
+| 1  | SLK  | REM47| AAATGA         | 4.52175| 56    | 61  | 104010871     | 104010876   |
+| 2  | OPA1 | ILF2 | GCACGGT        | 5.47395| 46    | 53  | 193626137     | 193626144   |
+| 2  | OPA1 | REM47| CAATTT         | 5.81979| 15    | 20  | 193626106     | 193626111   |
+| 2  | OPA1 | REM47| AAATTC         | 5.507349| 85   | 90  | 193626176     | 193626181   |
+| 2  | OPA1 | REM47| TAATCA         | 8.626369| 201  | 206 | 193626292     | 193626297   |
+| 3  | LDHB | ILF2 | GCTCGCG        | 5.158135| 6    | 13  | 21657756      | 21657763    |
+| 3  | LDHB | ILF2 | GTTGTCG        | 5.154187| 15   | 22  | 21657765      | 21657772    |
+| 3  | LDHB | ILF2 | TTGTCGGG       | 5.864684| 17   | 24  | 21657767      | 21657774    |
+| 3  | LDHB | ILF2 | CGGACGAG       | 5.948750| 60   | 67  | 21657810      | 21657817    |
+| 3  | LDHB | REM47| GAATCC         | 4.500737| 158  | 163 | 21657908      | 21657913    |
+
