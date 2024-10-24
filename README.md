@@ -10,7 +10,7 @@ The tools presented here are functions in R designed to provide motif scores bas
 | OPA1 | 3      | +  | 193626092       | 193626202 |
 | LDHB | 12     | -  | 21657751        | 21657835  |
 
-The tools are listed below:
+The tools are described below:
 
 #### **`extract_sequence`** - *Get Sequences from Genomic Coordinates*
 
