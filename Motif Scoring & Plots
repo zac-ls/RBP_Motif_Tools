@@ -4,8 +4,15 @@ generate_pwm_from_ppm <- function(ppm, background_freq = 0.25) {
   return(pwm)
 }
 
-# Function to score a motif using a PWM or PPM and return the positions of high scores and their ranges
-score_motif_with_positions_pwm <- function(sequence, pwm, threshold = 3) {
+# Function to calculate the maximum possible score for a PWM
+calculate_max_score <- function(pwm) {
+  # For each position in the PWM, select the maximum value across the nucleotides (A, C, G, T)
+  max_score <- sum(apply(pwm, 2, max))
+  return(max_score)
+}
+
+# Function to score a motif using a PWM and return the positions of high scores and their ranges
+score_motif_with_positions_pwm <- function(sequence, pwm, threshold) {
   sequence <- toupper(sequence)
   motif_length <- ncol(pwm)
   sequence_length <- nchar(sequence)
@@ -40,7 +47,8 @@ score_motif_with_positions_pwm <- function(sequence, pwm, threshold = 3) {
 }
 
 # Function to find RBP binding sites, plot PWM motifs, and export each plot as a PDF to a folder
-find_rbp_binding_and_generate_table <- function(df, ppms, thresholds, output_folder = "RBP_Motif_Plots") {
+# The threshold is calculated as a percentage of the maximum possible PWM score
+find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage = 75, output_folder = "RBP_Motif_Plots") {
   # Check if the folder exists, if not, create it
   if (!dir.exists(output_folder)) {
     dir.create(output_folder)
@@ -114,8 +122,11 @@ find_rbp_binding_and_generate_table <- function(df, ppms, thresholds, output_fol
       # Convert PPM to PWM
       pwm <- generate_pwm_from_ppm(ppm)
       
-      # Get the threshold for this RBP
-      threshold <- thresholds[[rbp_name]]
+      # Calculate the maximum score for the PWM
+      max_score <- calculate_max_score(pwm)
+      
+      # Calculate the threshold as a percentage of the maximum score
+      threshold <- (threshold_percentage / 100) * max_score
       
       # Get the scores and positions for this RBP and sequence
       score_data <- score_motif_with_positions_pwm(toupper(sequence), pwm, threshold)
@@ -150,10 +161,6 @@ find_rbp_binding_and_generate_table <- function(df, ppms, thresholds, output_fol
   return(motif_table)  # Return the final motif table with all motifs and positions
 }
 
-########################
-# USER INPUT EXAMPLES #
-########################
-
 # Example PPMs for multiple RBPs (you can add as many as needed)
 ppm_ILF2 <- matrix(c(0.144257703, 0.118347339, 0.118347339, 0.335134054, 0.046518607, 0.106042417, 0.131952781, 0.131952781,
                      0.144157663, 0.118247299, 0.118247299, 0.094237695, 0.046418567, 0.105942377, 0.131852741, 0.131852741,
@@ -179,10 +186,7 @@ rownames(ppm_RBM47) <- c("A", "C", "G", "T")  # Add row names
 # Store the PPMs in a named list
 ppms_list <- list("ILF2" = ppm_ILF2, "RALY" = ppm_RALY, "RBM47" = ppm_RBM47)
 
-# Example thresholds for each RBP
-thresholds <- list("ILF2" = 3, "RALY" = 2, "RBM47" = 3.5)
-
-# Example Data Frame (can also be the full rMATS output of SE.MATS.JC/JCEC)
+# Example Data Frame
 df <- data.frame(
   gene = c("SLK", "OPA1", "LDHB"),
   chr = c("10", "3", "12"),
@@ -196,8 +200,8 @@ df <- data.frame(
                           "taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg")
 )
 
-# Find RBP binding motifs, generate plots, and export to folder using specific thresholds for each RBP
-motif_results <- find_rbp_binding_and_generate_table(df, ppms_list, thresholds)
+# Find RBP binding motifs, generate plots, and export to folder with threshold as percentage of max score
+motif_results <- find_rbp_binding_and_generate_table(df, ppms_list, threshold_percentage = 50 )
 
 # View the generated table of RBP motif sequences and positions
 print(motif_results)
