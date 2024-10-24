@@ -55,7 +55,7 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage =
   }
   
   # Initialize an empty list to store results for all sequences with consistent column order
-  motif_table <- data.frame(ID = character(0), gene = character(0), RBP = character(0), motif_sequence = character(0), 
+  motif_table <- data.frame(ID = character(0), geneSymbol = character(0), RBP = character(0), motif_sequence = character(0), 
                             score = numeric(0), start = integer(0), end = integer(0), 
                             genomic_start = integer(0), genomic_end = integer(0))
   
@@ -68,7 +68,7 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage =
     seq_length <- nchar(sequence)
     
     # Define the file name for the PDF file
-    pdf_filename <- file.path(output_folder, paste0("Motif_Scores_", df$gene[i], ".pdf"))
+    pdf_filename <- file.path(output_folder, paste0("Motif_Scores_", df$geneSymbol[i], ".pdf"))
     
     # Open PDF device to save the plot
     pdf(file = pdf_filename, width = 8, height = 6)
@@ -79,7 +79,7 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage =
     # Initialize the plot
     plot(1:seq_length, rep(0, seq_length), type = "n", xaxt = "n", ylim = c(0, 7), 
          xlab = "", ylab = "Motif Score", 
-         main = paste("Motif Scores for Gene:", df$gene[i]))
+         main = paste("Motif Scores for Gene:", df$geneSymbol[i]))
     
     # Add x-axis label
     mtext("Nucleotide Position", side = 1, line = 0.5, cex = 1)
@@ -135,7 +135,7 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage =
       # Add genomic coordinates for each matched motif
       if (nrow(score_data) > 0) {
         score_data$ID <- df$ID[i]  # Add the ID to the score_data
-        score_data$gene <- df$gene[i]
+        score_data$geneSymbol <- df$geneSymbol[i]
         score_data$RBP <- rbp_name
         
         # Calculate genomic start and end positions for each motif match
@@ -146,7 +146,7 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage =
         motif_table <- rbind(motif_table, score_data)
         
         # Reorder columns and reset row names
-        motif_table <- motif_table[, c("ID", "gene", "RBP", "motif_sequence", "score", "start", "end", "genomic_start", "genomic_end")]
+        motif_table <- motif_table[, c("ID", "geneSymbol", "RBP", "motif_sequence", "score", "start", "end", "genomic_start", "genomic_end")]
         rownames(motif_table) <- NULL  # Reset row names to be sequential numbers
       }
       
@@ -172,6 +172,10 @@ find_rbp_binding_and_generate_table <- function(df, ppms, threshold_percentage =
   
   return(motif_table)  # Return the final motif table with all motifs and positions, including genomic coordinates
 }
+
+####################
+# User Inputs Here #
+####################
 
 # Example PPMs for multiple RBPs (you can add as many as needed)
 ppm_ILF2 <- matrix(c(0.144257703, 0.118347339, 0.118347339, 0.335134054, 0.046518607, 0.106042417, 0.131952781, 0.131952781,
@@ -201,7 +205,7 @@ ppms_list <- list("ILF2" = ppm_ILF2, "RALY" = ppm_RALY, "RBM47" = ppm_RBM47)
 # Example Data Frame
 df <- data.frame(
   ID = c("1", "2", "3"),
-  gene = c("SLK", "OPA1", "LDHB"),
+  geneSymbol = c("SLK", "OPA1", "LDHB"),
   chr = c("10", "3", "12"),
   strand = c("+","+","-"),
   exonStart_0base = c(104010816, 193626092, 21657751),
