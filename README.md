@@ -60,7 +60,7 @@ Where $S(N)$ is the score at position $N$, $P(C_N)$ is the probability of the ob
 
 For a more detailed explanation of the mathematical principles behind sequence motif matrices, refer to [this vignette](https://bioconductor.org/packages/devel/bioc/vignettes/universalmotif/inst/doc/IntroductionToSequenceMotifs.pdf).
 
-The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) the motif's length across the sequence one position at a time and generates a score based on the matching nucleotides of the PWM at each window. Of course, we shouldn't accept all the motifs that are identified, so a threshold is applied. The thresholding method used here discards scores less than or equal to a percentage of the maximal possible score for a PWM (the max score is obtained by the `calculate_max_score` function.
+The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) the motif's length across the sequence one position at a time and generates a score based on the matching nucleotides of the PWM at each window. Of course, we shouldn't accept all the motifs that are identified, so a threshold is applied. The thresholding method used here discards scores less than or equal to a percentage of the maximal possible score for a PWM (the max score is obtained by the `calculate_max_score` function).
 
 The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
 
