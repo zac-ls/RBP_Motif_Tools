@@ -33,7 +33,7 @@ This function is similar to `extract_sequence` except that it extracts both sequ
 | LDHB | 12      | -  | 21657751        | 21657835  | taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg                                                                                                                                            |
 
 ### **Motif Scoring & Plots** 
-#### **`find_rbp_binding_and_generate_table`** - *finds RBP binding sites, plots PWM motifs, and exports plots as a PDF to subfolder*
+#### **`find_rbp_binding_and_generate_table`** - *Finds RBP Binding Sites, Plots PWM Motifs, and Exports Plots as a PDF to a subfolder*
 
 This is a wrapper function that contains the following:
 
