@@ -24,7 +24,7 @@ This tool leverages the Bioconductor packages [BSgenome](https://bioconductor.or
 
 #### **`extract_sequence_with_flanks`** - *Get Sequences and thier Flanking Regions from Genomic Coordinates*
 
-This function is similar to `extract_sequence` except that it extracts both sequence defined by exonStart_0base to exonEnd and a desired number of flanking seqeunces (such as 50 +/- the exon region). For easy visualizaiton, the flanking (intronic) regions are in lowercase.
+This function is similar to `extract_sequence` except that it extracts sequences defined by both exonStart_0base to exonEnd and a desired number of flanking seqeunces (such as 50 +/- the exon region). For easy visualizaiton, the flanking (intronic) regions are in lowercase.
 
 | geneSymbol  | chr | strand | exonStart_0base | exonEnd   | nucleotide_sequence                                 
 |-------|--------|-----|-----------------|-----------|--------------------------------------------------------------------|
@@ -50,7 +50,7 @@ Here, we can generate RBP sequence motif scores based on either the position pro
 | **G**    | 0.0620 | 0.0148 | 0.0148 | 0.0148 | 0.0148 | 0.2048 | 0.5665 |
 | **T**    | 0.7258 | 0.9556 | 0.9556 | 0.9556 | 0.9556 | 0.5736 | 0.2649 |
 
-PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table). A pseudocount of 1 is applied.
+PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table).
 
 To correct for background nucleotide frequencies, position weight matrices (PWMs) can be used. A PWM presents the "expected" motif sequence scores by incorporating background nucleotide probabilities, assuming uniform distribution (i.e., $1/4$ for each nucleotide). To compute a PWM from a PPM, the `generate_pwm_from_ppm` function applies the following log-odds scoring formula:
 
@@ -58,13 +58,20 @@ To correct for background nucleotide frequencies, position weight matrices (PWMs
 
 Where $S(N)$ is the score at position $N$, $P(C_N)$ is the probability of the observed counts $C_N$ (which corresponds to the PPM), and $B_N$ represents the background nucleotide frequency at position $N$.
 
+|Position     | 1  |2  | 3 | 4  | 5 | 6  | 7  | 8  |
+|-----|------|------|------|------|------|------|------|------|
+| A   | -0.88| 0.09 | -0.06| 1.58 | 0.09 | -0.41| -0.06| 0.23 |
+| C   | -1.16| -1.58| 0.95 | 1.11 | 0.56 | 0.86 | 0.32 | 1.58 |
+| G   | 0.87 | 0.45 | -1.36| -1.58| -0.33| -0.05| -1.36| 0.68 |
+| T   | -1.18| -0.20| 0.38 | 0.88 | -0.20| -0.86| 0.96 | -1.58|
+
 For a more detailed explanation of the mathematical principles behind sequence motif matrices, refer to [this vignette](https://bioconductor.org/packages/devel/bioc/vignettes/universalmotif/inst/doc/IntroductionToSequenceMotifs.pdf).
 
 The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) the motif's length across the sequence one position at a time and generates a score based on the matching nucleotides of the PWM at each window. Of course, we shouldn't accept all the motifs that are identified, so a threshold is applied. The thresholding method used here discards scores less than or equal to a percentage of the maximal possible score for a PWM (the max score is obtained by the `calculate_max_score` function).
 
 The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
 
-<img width="458" alt="image" src="https://github.com/user-attachments/assets/31bfa738-4f54-444e-8a63-aa7abaf25085">
+![image](https://github.com/user-attachments/assets/0f38b0f8-1e26-4adf-8c5b-72c60af9f9e9)
 
 The function also generates a table of the RBP motif analyses, including the gene symbol, RBP, motif sequence, the motif's score, its relative start and end positions within the sequence, and it's genomic start and end coordinates. 
 
