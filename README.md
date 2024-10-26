@@ -96,26 +96,39 @@ For a more detailed explanation of the mathematical principles behind sequence m
 
 The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) the motif's length across the sequence one position at a time and generates a score based on the matching nucleotides of the PWM at each window. Of course, we shouldn't accept all the motifs that are identified, so a threshold is applied. The thresholding method used here discards scores less than or equal to a percentage of the maximal possible score for a PWM (the max score is obtained by the `calculate_max_score` function).
 
-The `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
+Finally, the `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results. (1) including a plot for each sequence, displaying the motif scores of each RBP along the sequence with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
 
-![image](https://github.com/user-attachments/assets/0f38b0f8-1e26-4adf-8c5b-72c60af9f9e9)
+<img width="576" alt="image" src="https://github.com/user-attachments/assets/c4b3c7d0-84a1-4f26-befb-707789292497">
 
 The function also generates a table of the RBP motif analyses, including the gene symbol, RBP, motif sequence, the motif's score, its relative start and end positions within the sequence, and it's genomic start and end coordinates. 
 
- | ID | geneSymbol | RBP  | motif_sequence | score  | start | end | genomic_start | genomic_end |
-|----|------|------|----------------|--------|-------|-----|---------------|-------------|
-| 1  | SLK  | REM47| AAATGA         | 4.52175| 56    | 61  | 104010871     | 104010876   |
-| 2  | OPA1 | ILF2 | GCACGGT        | 5.47395| 46    | 53  | 193626137     | 193626144   |
-| 2  | OPA1 | REM47| CAATTT         | 5.81979| 15    | 20  | 193626106     | 193626111   |
-| 2  | OPA1 | REM47| AAATTC         | 5.507349| 85   | 90  | 193626176     | 193626181   |
-| 2  | OPA1 | REM47| TAATCA         | 8.626369| 201  | 206 | 193626292     | 193626297   |
-| 3  | LDHB | ILF2 | GCTCGCG        | 5.158135| 6    | 13  | 21657756      | 21657763    |
-| 3  | LDHB | ILF2 | GTTGTCG        | 5.154187| 15   | 22  | 21657765      | 21657772    |
-| 3  | LDHB | ILF2 | TTGTCGGG       | 5.864684| 17   | 24  | 21657767      | 21657774    |
-| 3  | LDHB | ILF2 | CGGACGAG       | 5.948750| 60   | 67  | 21657810      | 21657817    |
-| 3  | LDHB | REM47| GAATCC         | 4.500737| 158  | 163 | 21657908      | 21657913    |
-
-
+| ID | gene | RBP   | motif_sequence | score     | start | end | genomic_start | genomic_end |
+|----|------|-------|----------------|-----------|-------|-----|---------------|-------------|
+| 1  | SLK  | RBM47 | AAATGA         | 4.576834  | 56    | 61  | 104010871     | 104010876   |
+| 1  | SLK  | SRSF2 | ACCTCCTG       | 4.190000  | 25    | 32  | 104010840     | 104010847   |
+| 1  | SLK  | SRSF2 | ATACACTG       | 4.320000  | 40    | 47  | 104010855     | 104010862   |
+| 1  | SLK  | SRSF2 | AGCTCATG       | 4.950000  | 94    | 101 | 104010909     | 104010916   |
+| 1  | SLK  | SRSF2 | AGCCTTGCA      | 3.460000  | 126   | 135 | 104010941     | 104010950   |
+| 1  | SLK  | SRSF2 | AGCCGACG       | 3.800000  | 129   | 136 | 104010944     | 104010951   |
+| 1  | SLK  | SRSF2 | TGCTACTA       | 3.240000  | 162   | 169 | 104010977     | 104010984   |
+| 1  | SLK  | SRSF2 | AACCAGAA       | 3.240000  | 171   | 178 | 104010986     | 104010993   |
+| 2  | OPA1 | FUS   | AGCGCGC        | 10.032832 | 107   | 113 | 193626198     | 193626204   |
+| 2  | OPA1 | RBM47 | CAATTT         | 5.793409  | 15    | 20  | 193626106     | 193626111   |
+| 2  | OPA1 | RBM47 | AAATTC         | 5.493475  | 85    | 90  | 193626176     | 193626181   |
+| 2  | OPA1 | RBM47 | TAATCA         | 8.575169  | 201   | 206 | 193626292     | 193626297   |
+| 2  | OPA1 | SRSF2 | AACTCCTG       | 4.950000  | 39    | 46  | 193626130     | 193626137   |
+| 2  | OPA1 | SRSF2 | AGCCGCTG       | 5.560000  | 116   | 123 | 193626207     | 193626214   |
+| 2  | OPA1 | SRSF2 | GGCCAATA       | 4.250000  | 123   | 130 | 193626214     | 193626221   |
+| 2  | OPA1 | SRSF2 | GGCTACCG       | 5.100000  | 181   | 188 | 193626272     | 193626279   |
+| 3  | LDHB | RBM47 | GAATCC         | 4.497426  | 158   | 163 | 21657908      | 21657913    |
+| 3  | LDHB | SRSF2 | GGCCCCGG       | 3.490000  | 22    | 29  | 21657772      | 21657779    |
+| 3  | LDHB | SRSF2 | AGCCGCGC       | 4.010000  | 51    | 58  | 21657801      | 21657808    |
+| 3  | LDHB | SRSF2 | GTCTCCCA       | 4.020000  | 111   | 118 | 21657861      | 21657868    |
+| 3  | LDHB | SRSF2 | GTCTCCAG       | 4.540000  | 112   | 119 | 21657862      | 21657869    |
+| 3  | LDHB | SRSF2 | CTCTCCTG       | 3.530000  | 128   | 135 | 21657878      | 21657885    |
+| 3  | LDHB | SRSF2 | GGACCCTG       | 5.430000  | 151   | 158 | 21657901      | 21657908    |
+| 3  | LDHB | SRSF2 | GAATCCTG       | 4.840000  | 158   | 165 | 21657908      | 21657915    |
+| 3  | LDHB | SRSF2 | GGCCCACA       | 4.080000  | 165   | 172 | 21657915      | 21657922    |
 
 ## What's Next?
 
