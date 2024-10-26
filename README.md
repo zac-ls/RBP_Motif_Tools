@@ -12,7 +12,7 @@ The tools presented here are R functions designed to provide motif scores based 
 
 (Note, if using an rMATS table, consider filtering `FDR` and `IncLevelDifference`)
 
-Now, on to the description of the tool in this repository: 
+## Description of Tools
 
 #### **`extract_sequence`** - *Get Sequences from Genomic Coordinates*
 
