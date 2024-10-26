@@ -42,7 +42,7 @@ This is a wrapper function that contains the following:
 - **`handle_ppm_or_pwm`** - *checks if the input RBP matrix is a PWM or a PPM to handle appropriately*
 - **`apply_pseudocount`** - *adds a pseudocount to an input PPM to avoid zero probabilities*
 - **`generate_pwm_from_ppm`** - *calculates a PWM from an input PPM*
-- **`calculate_max_score`** - *finds the maximum possible score for a PWM*
+- **`calculate_max_score`** - *finds the maximum possible score for a PWM for thresholding criteria*
 - **`score_motif_with_positions_pwm`** - *scores motifs using PWM or PPM input and returns the positions of high scores and their ranges*
 
 Here, we can generate RBP sequence motif scores based on either the position probability matrix (PPM) or the position weighted matrix (PWM) of a characterized RBP. Such matrix information can be found and downloaded from certain online databases, such as [RBPmap](http://rbpmap.technion.ac.il/download.html). The below table represents a PPM of the RBP, *RBM47*. 
