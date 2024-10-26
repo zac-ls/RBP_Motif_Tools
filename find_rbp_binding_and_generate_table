@@ -4,7 +4,11 @@ handle_ppm_or_pwm <- function(matrix_input) {
   if (any(matrix_input < 0)) {
     pwm <- matrix_input  # It's already a PWM, no conversion needed
   } else {
-    pwm <- generate_pwm_from_ppm(matrix_input)  # Convert PPM to PWM with pseudocount
+    # Check if PPM contains any zeros before applying pseudocounts
+    if (any(matrix_input == 0)) {
+      matrix_input <- apply_pseudocount(matrix_input)  # Apply pseudocounts to avoid zero probabilities
+    }
+    pwm <- generate_pwm_from_ppm(matrix_input)  # Convert PPM (with pseudocounts if needed) to PWM
   }
   
   # Ensure PWM has row names ("A", "C", "G", "T")
@@ -15,11 +19,17 @@ handle_ppm_or_pwm <- function(matrix_input) {
   return(pwm)
 }
 
-# Function to apply pseudocount to a PPM to avoid zero probabilities
+# Function to apply pseudocount to a PPM only if it contains zeros
 apply_pseudocount <- function(ppm, p = 0.01) {
-  n <- nrow(ppm)  # Total number of letters (for DNA, n = 4)
-  pseudocount_ppm <- (ppm + p / n) / (colSums(ppm) + p)
-  return(pseudocount_ppm)
+  # Check if there are any zeros in the PPM
+  if (any(ppm == 0)) {
+    n <- nrow(ppm)  # Total number of nucleotides (for RNA, n = 4)
+    pseudocount_ppm <- (ppm + p / n) / (colSums(ppm) + p)
+    return(pseudocount_ppm)
+  } else {
+    # Return the original PPM if no zeros are found
+    return(ppm)
+  }
 }
 
 # Function to generate PWM from PPM with pseudocount correction
@@ -212,10 +222,10 @@ find_rbp_binding_and_generate_table <- function(df, matrices, threshold_percenta
 
 # Example PPMs and PWMs for multiple RBPs (you can add as many as needed)
 # RBP 1 input
-ppm_ILF2 <- matrix(c(0.144257703, 0.118347339, 0.118347339, 0.335134054, 0.046518607, 0.106042417, 0.131952781, 0.131952781,
-                     0.144157663, 0.118247299, 0.118247299, 0.094237695, 0.046418567, 0.105942377, 0.131852741, 0.131852741,
-                     0.567627051, 0.645258103, 0.645258103, 0.193277311, 0.860744298, 0.682272909, 0.604641857, 0.604641857,
-                     0.143957583, 0.118147259, 0.118147259, 0.37735094, 0.046318527, 0.105742297, 0.131552621, 0.131552621),
+ppm_FUS <- matrix(c(0.184856564,	0.156523489,	0.016901683,	0.016901683,	0.016901683,	0.016901683,	0.039958245,
+                     0.173741944,	0.150250217,	0.949294956,	0.016901683,	0.949294956,	0.016901683,	0.791476076,
+                     0.173171964,	0.538128552,	0.016901683,	0.949294956,	0.016901683,	0.949294956,	0.039958245,
+                     0.468229523,	0.155097745,	0.016901683,	0.016901683,	0.016901683,	0.016901683,	0.12860743),
                    nrow = 4, byrow = TRUE)
 rownames(ppm_ILF2) <- c("A", "C", "G", "T")  # Add row names
 
@@ -237,7 +247,7 @@ pwm_SRSF2 <- matrix(c(0.88, 0.09, -0.06, -1.58, 0.09, -0.41, -0.06, 0.23,
 rownames(pwm_SRSF2) <- c("A", "C", "G", "T")  # Add row names
 
 # Store the PPMs and PWMs in a named list
-matrices_list <- list("ILF2" = ppm_ILF2, "RBM47" = ppm_RBM47, "SRSF2" = pwm_SRSF2)
+matrices_list <- list("FUS" = ppm_FUS, "RBM47" = ppm_RBM47, "SRSF2" = pwm_SRSF2)
 
 # Example Data Frame
 df <- data.frame(
