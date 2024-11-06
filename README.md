@@ -98,12 +98,7 @@ The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) th
 
 Finally, the `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results, including plots of motif scores (within a user-defined threshold) of each RBP along each sequence, with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
 
-<img src="https://github.com/user-attachments/assets/c58f992c-a736-4fd4-94e6-28a6e1f1ff6a" width="500px" height="375px">
-
-![Picture1](https://github.com/user-attachments/assets/2de929be-20c6-4d74-a22a-8b0b404cd73b)
-
 ![image](https://github.com/user-attachments/assets/2dcd8d41-1376-405f-9cb9-5bc3a5acd4d6)
-
 
 This output shows motif scores at a threshold of 50% maximal score for each RBP's PWM in a sequence from OPA1 gene.
 
