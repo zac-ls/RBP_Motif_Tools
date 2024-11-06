@@ -54,7 +54,7 @@ Here, we can generate RBP sequence motif scores based on either the position pro
 | G | 0.1628814 | 0  | 0  | 0  | 0.03091546 | 0.08704352 |
 | T | 0.3891946 | 0  | 0  | 1  | 0.44722361 | 0.18919460 |
 
-PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table). However, in order for downstream handling of probability values of zero and to account for possilbe biological variation in RBP binding, we can apply a pseudocount of $p = 0.01$. Here is the formula used by `apply_pseudocount` function: 
+PPMs represent the probabilities for each nucleotide at each position. These probabilities are derived from a matrix of raw frequencies (or counts) of each nucleotide letter at each position, known as a position count matrix (PCM). The PPM normalizes such counts (note that all positions sum to 1 in the table). However, for downstream handling of probability values of zero, and to account for possible biological variation in RBP binding, we can apply a pseudocount of $p = 0.01$. Here is the formula used by `apply_pseudocount` function: 
 
 ### $\ P_{\text{pseudo}}(N) = \frac{C_N + \frac{p}{n}}{\sum C + p} \$
 
