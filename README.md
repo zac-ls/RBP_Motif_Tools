@@ -98,22 +98,21 @@ The function `score_motif_with_positions_pwm` slides a window of (i.e. scans) th
 
 Finally, the `find_rbp_binding_and_generate_table` function is the wrapper function that outputs results, including plots of motif scores (within a user-defined threshold) of each RBP along each sequence, with reference to the position of the exon (see below). These plots are exported as PDFs to subfolder in the working directory.
 
-<img width="576" alt="image" src="https://github.com/user-attachments/assets/c4b3c7d0-84a1-4f26-befb-707789292497">
+<img src="https://github.com/user-attachments/assets/c58f992c-a736-4fd4-94e6-28a6e1f1ff6a" width="500px" height="375px">
 
-This output shows motif scores at a threshold of 50% maximal score for each RBP's PWM.
+![Picture1](https://github.com/user-attachments/assets/2de929be-20c6-4d74-a22a-8b0b404cd73b)
+
+![image](https://github.com/user-attachments/assets/2dcd8d41-1376-405f-9cb9-5bc3a5acd4d6)
+
+
+This output shows motif scores at a threshold of 50% maximal score for each RBP's PWM in a sequence from OPA1 gene.
 
 The function also generates a table of the RBP motif analyses, including the gene symbol, RBP, motif sequence, the motif's score, its relative start and end positions within the sequence, and it's genomic start and end coordinates. 
 
 | ID | gene | RBP   | motif_sequence | score     | start | end | genomic_start | genomic_end |
 |----|------|-------|----------------|-----------|-------|-----|---------------|-------------|
 | 1  | SLK  | RBM47 | AAATGA         | 4.576834  | 56    | 61  | 104010871     | 104010876   |
-| 1  | SLK  | SRSF2 | ACCTCCTG       | 4.190000  | 25    | 32  | 104010840     | 104010847   |
-| 1  | SLK  | SRSF2 | ATACACTG       | 4.320000  | 40    | 47  | 104010855     | 104010862   |
-| 1  | SLK  | SRSF2 | AGCTCATG       | 4.950000  | 94    | 101 | 104010909     | 104010916   |
-| 1  | SLK  | SRSF2 | AGCCTTGCA      | 3.460000  | 126   | 135 | 104010941     | 104010950   |
-| 1  | SLK  | SRSF2 | AGCCGACG       | 3.800000  | 129   | 136 | 104010944     | 104010951   |
 | 1  | SLK  | SRSF2 | TGCTACTA       | 3.240000  | 162   | 169 | 104010977     | 104010984   |
-| 1  | SLK  | SRSF2 | AACCAGAA       | 3.240000  | 171   | 178 | 104010986     | 104010993   |
 | 2  | OPA1 | FUS   | AGCGCGC        | 10.032832 | 107   | 113 | 193626198     | 193626204   |
 | 2  | OPA1 | RBM47 | CAATTT         | 5.793409  | 15    | 20  | 193626106     | 193626111   |
 | 2  | OPA1 | RBM47 | AAATTC         | 5.493475  | 85    | 90  | 193626176     | 193626181   |
