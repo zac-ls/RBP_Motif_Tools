@@ -35,7 +35,7 @@ This function is similar to `extract_sequence` except that it extracts sequences
 | LDHB | 12      | -  | 21657751        | 21657835  | taagaggctgcggtggttgtggggccccgccccctcctccctccttgcagAGCCGGCGCCGGAGGAGACGCACGCAGCTGACTTTGTCTTCTCCGCACGACTGTTACAGAGGTCTCCAGAGCCTTCTCTCTCCTGgtaggtttcggctcaggaccctgaatcctggcccacaggcaagcctgatg                                                                                                                                            |
 
 ### **Motif Scoring & Plots** 
-#### **`find_rbp_binding_and_generate_table`** - *Find RBP Binding Sites and Scores from PPM or PWM Input and Plot and Tabulate Motif Positions and Scores*
+#### **`find_rbp_binding_and_generate_table`** - *Find RBP Binding Sites and Scores from PPM or PWM Input; Plot and Tabulate Motif Positions and Scores*
 
 This is a wrapper function that contains the following:
 
