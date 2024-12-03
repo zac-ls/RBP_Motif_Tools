@@ -1,7 +1,7 @@
 # RNA Binding Protein Motif Tools (for rMATS)
 
 ### Biological Background
-RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are involved in many aspects of RNA processing, including alternative splicing. RBPs bind to RNA sequence motifs (about 3–8 nucleotides) via their RNA recognition motif (RRM). Many RRMs and their binding sites have been experimentally characterized, and RBP-specific consensus motif sequences have been probabilistically determined (see [ESEfinder](https://esefinder.ahc.umn.edu/tools/ESE2/) and [RBPmap](http://rbpmap.technion.ac.il)).
+RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are involved in many aspects of RNA processing, including alternative splicing. RBPs recognize and bind to RNA sequence motifs (about 3–8 nucleotides) via their RNA recognition motif domain(s). RBP binding site sequences are experimentally characterized using techniques like SELEX and CLIP-seq, from which RBP-specific consensus motif sequences can be probabilistically determined (see [ESEfinder](https://esefinder.ahc.umn.edu/tools/ESE2/) and [RBPmap](http://rbpmap.technion.ac.il)).
 
 ## Tool Descriptions & Usage
 ### Input
