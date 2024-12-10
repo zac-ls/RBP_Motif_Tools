@@ -1,7 +1,7 @@
 # RNA Binding Protein Motif Tools (for rMATS)
 
 ### Biological Background
-RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are involved in many aspects of RNA processing, including alternative splicing. RBPs recognize and bind to RNA sequence motifs (about 3–8 nucleotides) via their RNA recognition motif domain(s). RBP binding site sequences are experimentally characterized using techniques like SELEX and CLIP-seq, from which RBP-specific consensus motif sequences can be probabilistically determined (see [ESEfinder](https://esefinder.ahc.umn.edu/tools/ESE2/) and [RBPmap](http://rbpmap.technion.ac.il)).
+RNA-binding proteins (RBPs) are proteins that bind to RNA molecules and are involved in many aspects of RNA processing, including alternative splicing. RBPs recognize and bind to RNA sequence motifs (about 3–8 nucleotides) via their RNA recognition motif domain(s). RBP binding site sequences are experimentally characterized using techniques like SELEX and CLIP-seq, from which RBP-specific consensus motif sequences can be probabilistically determined (see [De, S. & Gorospe, M., 2017](https://pmc.ncbi.nlm.nih.gov/articles/PMC5509467/) for a list of motif discovery and analysis tools from CLIP ribonucleoprotein data).
 
 ## Tool Descriptions & Usage
 ### Input
@@ -131,4 +131,9 @@ A table of the RBP motif analyses is also generated. It includes the gene symbol
 ## What's Next?
 
 For these tools, I plan to allow handling of other rMATS input formats (i.e. IR, A3SS, A5SS, and MXE tables) and eventually create an R package. In a future RBP tool, I aim to develop functions that plot motif enrichment of alternatively spliced events against their ΔPSI values. This will enable investigations into how different RBPs contribute to the differential motif enrichment of alternatively spliced events across two conditions.
+
+## References
+
+De, S., & Gorospe, M. (2017). Bioinformatic tools for analysis of CLIP ribonucleoprotein data. Wiley interdisciplinary reviews. RNA, 8(4), 10.1002/wrna.1404. https://doi.org/10.1002/wrna.1404
+
   
