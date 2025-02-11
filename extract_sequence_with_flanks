@@ -59,56 +59,7 @@ extract_sequence_with_flanks <- function(chromosome, exon_start, exon_end, stran
   return(full_seq_mod)  # Return the modified sequence with proper casing and reverse complement if applicable
 }
 
-# Example Data Frame
-# Load necessary libraries
-library(BSgenome)
-library(BSgenome.Hsapiens.UCSC.hg38)
-library(dplyr)
 
-# Function to extract nucleotide sequences and apply reverse complement based on strand
-extract_sequence <- function(chromosome, exon_start, exon_end, strand) {
-  # Check if chromosome has 'chr' prefix, if not add it
-  if (!grepl("^chr", chromosome)) {
-    chromosome <- paste0("chr", chromosome)
-  }
-  
-  # Ensure valid start and end points
-  start <- min(exon_start, exon_end)
-  end <- max(exon_start, exon_end)
-  
-  # Extract the sequence using the coordinates and chromosome
-  seq <- getSeq(BSgenome.Hsapiens.UCSC.hg38, names = chromosome, start = start, end = end)
-  
-  # Convert sequence to character string
-  sequence <- as.character(seq)
-  
-  # Custom function to get reverse complement while retaining case
-  reverse_complement_case <- function(sequence) {
-    # Define complement mapping for both upper and lower case
-    complement_map <- c(
-      'A' = 'T', 'T' = 'A', 'C' = 'G', 'G' = 'C',
-      'a' = 't', 't' = 'a', 'c' = 'g', 'g' = 'c'
-    )
-    
-    # Split the sequence into individual characters
-    chars <- unlist(strsplit(sequence, ""))
-    
-    # Reverse the sequence and get the complement
-    rev_complement <- sapply(rev(chars), function(x) complement_map[x])
-    
-    # Collapse the character vector back into a string
-    return(paste(rev_complement, collapse = ""))
-  }
-  
-  # Apply reverse complement if the strand is "-"
-  if (strand == "-") {
-    sequence <- reverse_complement_case(sequence)
-  }
-  
-  return(sequence)
-}
-
-# Example Data Frame
 # Example Data Frame
 df <- data.frame(
   gene = c("SLK", "OPA1", "LDHB"),
@@ -118,14 +69,6 @@ df <- data.frame(
   exonEnd = c(104010908, 193626202, 21657835),
   FDR = c(0,0.00000124,0.00005245),
   IncLevelDifference = c(-0.405,0.204,-0.315)
-)
-
-# Apply the combined function to each row in the data frame using mutate
-df_with_sequences <- df %>%
-  mutate(nucleotide_sequence = mapply(extract_sequence, chr, exonStart_0base, exonEnd, strand))
-
-# View the updated data frame with the new 'nucleotide_sequence' column
-print(df_with_sequences)
 )
 
 # Apply the function to each row in the data frame using mutate
